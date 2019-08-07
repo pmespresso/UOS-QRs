@@ -1,19 +1,19 @@
-// Copyright 2017-2019 @polkadot/ui-qr authors & contributors
+// Copyright 2017-2019 @polkadot/react-qr authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { BaseProps } from './types';
 
 import React from 'react';
-import { u8aConcat } from '@polkadot/util';
 import { xxhashAsHex } from '@polkadot/util-crypto';
 
-import { ADDRESS_PREFIX } from './constants';
-import { encodeString } from './util';
+import { createSignPayload } from './util';
 import QrDisplay from './Display';
 
 interface Props extends BaseProps {
   address: string;
+  cmd: Uint8Array;
+  payload: Uint8Array;
 }
 
 interface State {
@@ -21,19 +21,14 @@ interface State {
   dataHash: string | null;
 }
 
-const PREFIX = encodeString(ADDRESS_PREFIX);
-
-export default class DisplayExtrinsic extends React.PureComponent<Props, State> {
+export default class DisplayPayload extends React.PureComponent<Props, State> {
   public state: State = {
     data: null,
     dataHash: null
   };
 
-  public static getDerivedStateFromProps ({ address }: Props, prevState: State): State | null {
-    const data = u8aConcat(
-      PREFIX,
-      encodeString(address)
-    );
+  public static getDerivedStateFromProps ({ address, cmd, payload }: Props, prevState: State): State | null {
+    const data = createSignPayload(address, cmd, payload);
     const dataHash = xxhashAsHex(data);
 
     if (dataHash === prevState.dataHash) {

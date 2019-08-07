@@ -1,4 +1,4 @@
-// Copyright 2017-2019 @polkadot/ui-qr authors & contributors
+// Copyright 2017-2019 @polkadot/react-qr authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -8,7 +8,7 @@ import React from 'react';
 import Reader from 'react-qr-reader';
 import styled from 'styled-components';
 
-import { createSize } from './constants';
+import { createImgSize } from './util';
 
 interface Props extends BaseProps {
   delay?: number;
@@ -19,7 +19,7 @@ interface Props extends BaseProps {
 
 const DEFAULT_DELAY = 150;
 const DEFAULT_ERROR = (error: Error): void => {
-  console.error('@polkadot/ui-qr:Scan', error.message);
+  console.error('@polkadot/react-qr:Scan', error.message);
 };
 
 class Scan extends React.PureComponent<Props> {
@@ -29,7 +29,7 @@ class Scan extends React.PureComponent<Props> {
     return (
       <div
         className={className}
-        style={createSize(size)}
+        style={createImgSize(size)}
       >
         <Reader
           className='ui--qr-Scan'

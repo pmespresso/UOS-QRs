@@ -1,4 +1,4 @@
-// Copyright 2017-2019 @polkadot/ui-qr authors & contributors
+// Copyright 2017-2019 @polkadot/react-qr authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
@@ -42,7 +42,7 @@ export default class ScanAddress extends React.PureComponent<Props> {
       decodeAddress(address);
       onScan(address);
     } catch (error) {
-      console.error('@polkadot/ui-qr:QrScanAddress', error.message);
+      console.error('@polkadot/react-qr:QrScanAddress', error.message);
     }
   }
 }

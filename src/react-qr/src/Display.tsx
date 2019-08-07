@@ -1,26 +1,24 @@
-// Copyright 2017-2019 @polkadot/ui-qr authors & contributors
+// Copyright 2017-2019 @polkadot/react-qr authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { BaseProps } from './types';
 
 import React from 'react';
-import qrcode from 'qrcode-generator';
 import styled from 'styled-components';
-import { u8aConcat } from '@polkadot/util';
 import { xxhashAsHex } from '@polkadot/util-crypto';
 
-import { createSize } from './constants';
-import { encodeNumber, decodeString } from './util';
+import qrcode from './qrcode';
+import { createFrames, createImgSize } from './util';
 
 interface Props extends BaseProps {
   size?: number;
+  skipEncoding?: boolean;
   value: Uint8Array;
-  withMulti?: boolean;
 }
 
 interface State {
-  frames: string[];
+  frames: Uint8Array[];
   frameIdx: number;
   image: string | null;
   timerId: number | null;
@@ -28,36 +26,17 @@ interface State {
 }
 
 const FRAME_DELAY = 2100;
-const FRAME_SIZE = 1716;
-const MULTIPART = new Uint8Array([0]);
 
-function getDataUrl (value: string): string {
+function getDataUrl (value: Uint8Array): string {
   const qr = qrcode(0, 'M');
 
+  // HACK See out qrcode stringToBytes override as used internally. This
+  // will only work for the case where we actuall pass `Bytes` in here
+  // @ts-ignore
   qr.addData(value, 'Byte');
   qr.make();
 
   return qr.createDataURL(16, 0);
-}
-
-function createFrames (input: Uint8Array): string[] {
-  const frames = [];
-  let idx = 0;
-
-  while (idx < input.length) {
-    frames.push(input.subarray(idx, idx + FRAME_SIZE));
-
-    idx += FRAME_SIZE;
-  }
-
-  return frames.map((frame, index: number): string =>
-    decodeString(u8aConcat(
-      MULTIPART,
-      encodeNumber(frames.length),
-      encodeNumber(index),
-      frame
-    ))
-  );
 }
 
 class Display extends React.PureComponent<Props, State> {
@@ -69,17 +48,18 @@ class Display extends React.PureComponent<Props, State> {
     valueHash: null
   };
 
-  public static getDerivedStateFromProps ({ value, withMulti = true }: Props, prevState: State): Pick<State, never> | null {
+  public static getDerivedStateFromProps ({ value, skipEncoding = false }: Props, prevState: State): Pick<State, never> | null {
     const valueHash = xxhashAsHex(value);
 
     if (valueHash === prevState.valueHash) {
       return null;
     }
 
-    const frames: string[] = withMulti
-      ? createFrames(value)
-      : [decodeString(value)];
+    const frames: Uint8Array[] = skipEncoding
+      ? [value]
+      : createFrames(value);
 
+    // encode on demand
     return {
       frames,
       frameIdx: 0,
@@ -90,7 +70,7 @@ class Display extends React.PureComponent<Props, State> {
 
   public componentDidMount (): void {
     this.setState({
-      timerId: setInterval(this.nextFrame, FRAME_DELAY)
+      timerId: window.setInterval(this.nextFrame, FRAME_DELAY)
     });
   }
 
@@ -113,7 +93,7 @@ class Display extends React.PureComponent<Props, State> {
     return (
       <div
         className={className}
-        style={createSize(size)}
+        style={createImgSize(size)}
       >
         <div
           className='ui--qr-Display'
@@ -136,6 +116,9 @@ class Display extends React.PureComponent<Props, State> {
       ? 0
       : frameIdx + 1;
 
+    // only encode the frames on demand, not above as part of the
+    // state derivation - in the case of large payloads, this should
+    // be slightly more responsive on initial load
     this.setState({
       frameIdx: nextIdx,
       image: getDataUrl(frames[nextIdx])

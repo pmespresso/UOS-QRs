@@ -1,18 +1,17 @@
-// Copyright 2017-2019 @polkadot/ui-qr authors & contributors
+// Copyright 2017-2019 @polkadot/react-qr authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { BaseProps } from './types';
 
 import React from 'react';
-import { u8aConcat } from '@polkadot/util';
-import { decodeAddress, xxhashAsHex } from '@polkadot/util-crypto';
+import { xxhashAsHex } from '@polkadot/util-crypto';
 
+import { createAddressPayload } from './util';
 import QrDisplay from './Display';
 
 interface Props extends BaseProps {
   address: string;
-  payload: Uint8Array;
 }
 
 interface State {
@@ -20,24 +19,14 @@ interface State {
   dataHash: string | null;
 }
 
-const SUBSTRATE = new Uint8Array([0x53]);
-const CRYPTO_SR25519 = new Uint8Array([0x01]);
-const SIGN_TX = new Uint8Array([0x00]);
-
-export default class DisplayPayload extends React.PureComponent<Props, State> {
+export default class DisplayExtrinsic extends React.PureComponent<Props, State> {
   public state: State = {
     data: null,
     dataHash: null
   };
 
-  public static getDerivedStateFromProps ({ address, payload }: Props, prevState: State): State | null {
-    const data = u8aConcat(
-      SUBSTRATE,
-      CRYPTO_SR25519,
-      SIGN_TX,
-      decodeAddress(address),
-      payload
-    );
+  public static getDerivedStateFromProps ({ address }: Props, prevState: State): State | null {
+    const data = createAddressPayload(address);
     const dataHash = xxhashAsHex(data);
 
     if (dataHash === prevState.dataHash) {
@@ -58,6 +47,7 @@ export default class DisplayPayload extends React.PureComponent<Props, State> {
     return (
       <QrDisplay
         className={className}
+        skipEncoding={true}
         style={style}
         value={data}
       />

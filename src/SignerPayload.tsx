@@ -2,8 +2,9 @@
 import SignerPayload from '@polkadot/api/SignerPayload';
 import extrinsics from '@polkadot/api-metadata/extrinsics/static';
 import { ClassOf, createType, GenericCall, Struct, u8 } from '@polkadot/types'; 
+import { blake2AsU8a } from '@polkadot/util-crypto';
 import React, { useEffect, useState } from 'react';
-import { Container } from 'semantic-ui-react';
+import { Container, Divider } from 'semantic-ui-react';
 
 import { QrDisplayPayload } from './react-qr/src';
 
@@ -11,6 +12,7 @@ const KUSAMA_ADDRESS = 'FF42iLDmp7JLeySMjwWWtYQqfycJvsJFBYrySoMvtGfvAGs';
 
 export function SignerPayloadComponent() {
   const [payload, setPayload] = useState();
+  const [payloadHash, setPayloadHash] = useState();
 
   useEffect(() => {
     GenericCall.injectMethods(extrinsics);
@@ -36,7 +38,10 @@ export function SignerPayloadComponent() {
       version: 2
     });
 
+    const payloadHash = blake2AsU8a(payload.toU8a());
+
     setPayload(payload);
+    setPayloadHash(payloadHash);
   }, []);
 
   return (
@@ -49,8 +54,20 @@ export function SignerPayloadComponent() {
         payload &&
           <QrDisplayPayload
             address={KUSAMA_ADDRESS}
-            cmd={new Uint8Array([0x01])}
+            cmd={new Uint8Array([0x00])} // sign payload
             payload={payload.toU8a()}
+            style={{ width: '300px', height: '300px' }} />
+      }
+
+      <Divider />
+
+      <b>Payload Blake2 Hashed: </b><p style={{ overflow: 'auto' }}>{payloadHash}</p>
+      {
+        payloadHash &&
+          <QrDisplayPayload
+            address={KUSAMA_ADDRESS}
+            cmd={new Uint8Array([0x01])} // sign payload hash
+            payload={payloadHash}
             style={{ width: '300px', height: '300px' }} />
       }
     </Container>

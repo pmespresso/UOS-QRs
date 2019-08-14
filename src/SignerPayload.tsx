@@ -7,6 +7,8 @@ import { Container, Divider } from 'semantic-ui-react';
 
 import { QrDisplayPayload } from '@polkadot/react-qr';
 
+import { UPLOAD_CONTRACT } from './contract';
+
 const KUSAMA_ADDRESS = 'FF42iLDmp7JLeySMjwWWtYQqfycJvsJFBYrySoMvtGfvAGs';
 const TEST = {
   address: '5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE',
@@ -21,19 +23,32 @@ const TEST = {
 };
 
 export function SignerPayloadComponent() {
-  // const [oversizedPayload, setOversizedPayload] = useState();
+  const [oversizedPayload, setOversizedPayload] = useState();
+  const [oversizedPayloadHash, setOversizedPayloadHash] = useState();
   const [payload, setPayload] = useState();
   const [payloadHash, setPayloadHash] = useState();
 
   useEffect(() => {
     GenericCall.injectMethods(extrinsics);
 
-    const payload = new GenericExtrinsicPayload(TEST, { version: 3 });
+    const OVERSIZED = {
+      ...TEST,
+      method: UPLOAD_CONTRACT
+    }
 
+    console.log(OVERSIZED);
+
+    const payload = new GenericExtrinsicPayload(TEST, { version: 3 });
+    const oversizedPayload = new GenericExtrinsicPayload(OVERSIZED,  { version: 3 });
+
+    console.log(oversizedPayload);
+    const oversizedPayloadHash = blake2AsU8a(oversizedPayload.toU8a());
     const payloadHash = blake2AsU8a(payload.toU8a());
 
     setPayload(payload);
     setPayloadHash(payloadHash);
+    setOversizedPayload(oversizedPayload);
+    setOversizedPayloadHash(oversizedPayloadHash);
   }, []);
 
   return (
@@ -52,7 +67,6 @@ export function SignerPayloadComponent() {
             style={{ width: '300px', height: '300px' }} />
       }
 
-
       <Divider />
 
       <h1>Payload Blake2 Hashed: </h1><p style={{ overflow: 'auto' }}>{payloadHash}</p>
@@ -66,27 +80,21 @@ export function SignerPayloadComponent() {
       }
 
       <Divider />
+
+
+
+      <Divider />
+
+      <h1>Oversized Payload Blake2 Hashed: </h1><p style={{ overflow: 'auto' }}>{oversizedPayloadHash}</p>
+      {
+        oversizedPayloadHash &&
+          <QrDisplayPayload
+            address={KUSAMA_ADDRESS}
+            cmd={1} // sign payload hash
+            payload={oversizedPayloadHash}
+            style={{ width: '300px', height: '300px' }} />
+      }
+
     </Container>
   )
 }
-
-/*
-isSr25519(type)
-    ? schnorrkelSign(message, pair)
-    : naclSign(message, pair);
-*/
-
-// payload && schnorrkelSign(createType('ExtrinsicPayload', payload, { version: payload.version }).toU8a(), schnorrkelKeypairFromSeed(new TextEncoder().encode('this is sparta')))
-
-{/* <h1>Oversized Payload: </h1>
-  <b>Payload JSON: </b> <p style={{ overflow: 'auto' }}>{oversizedPayload && oversizedPayload.toString()}</p>
-  <b>Payload SCALE U8A: </b> <p style={{ overflow: 'auto' }}>{oversizedPayload && oversizedPayload.toU8a()}</p>
-  <b>Payload Size? </b> <p>{oversizedPayload && oversizedPayload.toU8a().length}</p>
-      {
-  oversizedPayload &&
-    <QrDisplayPayload
-      address={KUSAMA_ADDRESS}
-      cmd={new Uint8Array([0x00])} // sign payload
-      payload={oversizedPayload}
-      style={{ width: '300px', height: '300px' }} />
-} */}

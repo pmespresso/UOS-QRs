@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "@babel/runtime": "^7.5.5",
-    "@polkadot/api": "0.90.0-beta.24",
+    "@polkadot/api": "^0.90.0-beta.49",
+    "@polkadot/keyring": "^1.1.1",
+    "@polkadot/react-qr": "^0.42.0-beta.34",
     "@polkadot/util": "1.1.0-beta.1",
     "@polkadot/util-crypto": "1.1.0-beta.1",
     "@types/jest": "24.0.15",
@@ -25,7 +27,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest ./src/react-qr/src/util.spec.ts",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

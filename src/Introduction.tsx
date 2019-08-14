@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import { QrDisplayAddress } from './react-qr/src';
+import { QrDisplayAddress } from '@polkadot/react-qr';
 
 const KUSAMA_ADDRESS = 'FF42iLDmp7JLeySMjwWWtYQqfycJvsJFBYrySoMvtGfvAGs';
 

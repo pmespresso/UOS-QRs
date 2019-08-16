@@ -12,16 +12,9 @@ const KUSAMA_ADDRESS = 'FF42iLDmp7JLeySMjwWWtYQqfycJvsJFBYrySoMvtGfvAGs';
 console.log('check addresss is kusama: ', checkAddress(KUSAMA_ADDRESS, 2));
 
 const App: React.FC = () => {
-  const [checkAddressResult, setCheckAddressResult] = useState();
-  const [addressToCheck, setAddresstoCheck] = useState();
+  const [address, setAddresstoCheck] = useState(KUSAMA_ADDRESS);
 
-  const handleCheckAddress = () => {
-    const result = checkAddress(addressToCheck, 2);
-    console.log(result);
-    setCheckAddressResult(result);
-  }
-
-  const handleChangeAddressToCheck = ({ target: { value }}: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSetAddress = ({ target: { value }}: React.ChangeEvent<HTMLInputElement>) => {
     setAddresstoCheck(value);
   }
 
@@ -29,20 +22,18 @@ const App: React.FC = () => {
     <Container>
       <Header>UOS Testing QRs</Header>
       <Grid.Row>
-        Check Address: <Input onChange={handleChangeAddressToCheck} value={addressToCheck} />
-        <Button onClick={handleCheckAddress}>Check</Button>
-        Result: {checkAddressResult && checkAddressResult[0]}
+        Set Address: <Input onChange={handleSetAddress} value={address} />
       </Grid.Row>
       <Grid width='12'>
         <Grid.Row>
           <Grid.Column width='9'>
-            <SubstrateUOSMessage />
+            <SubstrateUOSMessage address={address} />
           </Grid.Column>
         </Grid.Row>
         <Divider />
         <Grid.Row>
           <Grid.Column width='9'>
-            <SignerPayloadComponent />
+            <SignerPayloadComponent address={address} />
           </Grid.Column>
         </Grid.Row>
       </Grid>

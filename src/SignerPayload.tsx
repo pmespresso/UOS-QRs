@@ -3,7 +3,7 @@ import extrinsics from '@polkadot/api-metadata/extrinsics/static';
 import { createType, GenericCall, GenericExtrinsicPayload } from '@polkadot/types'; 
 import { blake2AsU8a, cryptoWaitReady } from '@polkadot/util-crypto';
 import React, { useEffect, useState } from 'react';
-import { Container, Divider } from 'semantic-ui-react';
+import { Container, Divider, Input } from 'semantic-ui-react';
 
 import { QrDisplayPayload } from '@polkadot/react-qr';
 
@@ -22,7 +22,13 @@ const TEST = {
   version: 2
 };
 
-export function SignerPayloadComponent() {
+interface Props {
+  address: string
+}
+
+export function SignerPayloadComponent(props: Props) {
+  const { address } = props;
+
   const [oversizedPayload, setOversizedPayload] = useState();
   const [oversizedPayloadHash, setOversizedPayloadHash] = useState();
   const [payload, setPayload] = useState();
@@ -54,14 +60,14 @@ export function SignerPayloadComponent() {
   return (
     <Container>
       <h1>Substrate Regular Payload</h1>
-      <b>Address: </b><p> {KUSAMA_ADDRESS} </p>
+      <b>Address: </b><p> {address} </p>
       <b>Payload JSON: </b><p style={{ overflow: 'auto' }}>{payload && payload.toJSON()}</p>
       <b>Payload SCALE U8A: </b><p style={{ overflow: 'auto' }}>{payload && payload.toU8a()}</p>
       <b> Payload Size? </b><p>{ payload && payload.toU8a().length }</p>
       {
         payload &&
           <QrDisplayPayload
-            address={KUSAMA_ADDRESS}
+            address={address}
             cmd={0} // sign payload
             payload={payload.toU8a()}
             style={{ width: '300px', height: '300px' }} />
@@ -73,7 +79,7 @@ export function SignerPayloadComponent() {
       {
         payloadHash &&
           <QrDisplayPayload
-            address={KUSAMA_ADDRESS}
+            address={address}
             cmd={1} // sign payload hash
             payload={payloadHash}
             style={{ width: '300px', height: '300px' }} />
@@ -89,7 +95,7 @@ export function SignerPayloadComponent() {
       {
         oversizedPayloadHash &&
           <QrDisplayPayload
-            address={KUSAMA_ADDRESS}
+            address={address}
             cmd={1} // sign payload hash
             payload={oversizedPayloadHash}
             style={{ width: '300px', height: '300px' }} />

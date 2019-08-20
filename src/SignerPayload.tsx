@@ -87,8 +87,6 @@ export function SignerPayloadComponent(props: Props) {
 
       <Divider />
 
-
-
       <Divider />
 
       <h1>Oversized Payload Blake2 Hashed: </h1><p style={{ overflow: 'auto' }}>{oversizedPayloadHash}</p>

@@ -15,11 +15,11 @@ const TEST = {
   blockHash: '0xde8f69eeb5e065e18c6950ff708d7e551f68dc9bf59a07c52367c0280f805ec7',
   blockNumber: '0x00231d30',
   era: '0x0703',
-  genesisHash: '0xdcd1346701ca8396496e52aa2785b1748deb6db09551b72159dcb3e08991025b',
+  genesisHash: '0x3fd7b9eb6a00376e5be61f01abb429ffb0b104be05eaff4d458da48fcd425baf',
   method: '0x0500ffd7568e5f0a7eda67a82691ff379ac4bba4f9c9b859fe779b5d46363b61ad2db9e56c',
   nonce: '0x00001234',
   tip: '0x00000000000000000000000000005678',
-  version: 2
+  version: 3
 };
 
 interface Props {

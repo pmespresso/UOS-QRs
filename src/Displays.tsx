@@ -1,4 +1,5 @@
 
+import { mnemonicGenerate } from '@polkadot/util-crypto';
 import React, { useState } from 'react';
 import { Container, Divider, Input, Grid, Header, Button } from 'semantic-ui-react';
 
@@ -7,6 +8,7 @@ import { SubstrateIntroduction } from './Introduction';
 import { SubstrateUOSMessage } from './Message';
 
 const KUSAMA_ADDRESS = 'FF42iLDmp7JLeySMjwWWtYQqfycJvsJFBYrySoMvtGfvAGs';
+// const POLKADOT_ADDRESS = ;
 export function Displays () {
     const [address, setAddresstoCheck] = useState(KUSAMA_ADDRESS);
 

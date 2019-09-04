@@ -1,6 +1,5 @@
 
-import extrinsics from '@polkadot/api-metadata/extrinsics/static';
-import { createType, GenericCall, GenericExtrinsicPayload } from '@polkadot/types'; 
+import { createType, GenericExtrinsicPayload } from '@polkadot/types'; 
 import { blake2AsU8a, cryptoWaitReady } from '@polkadot/util-crypto';
 import React, { useEffect, useState } from 'react';
 import { Container, Divider, Input } from 'semantic-ui-react';
@@ -8,6 +7,7 @@ import { Container, Divider, Input } from 'semantic-ui-react';
 import { QrDisplayPayload } from '@polkadot/react-qr';
 
 import { UPLOAD_CONTRACT } from './contract';
+import Call from '@polkadot/types/primitive/Generic/Call';
 
 const TEST_KUSAMA = {
   address: '5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE', // kusama address
@@ -26,6 +26,11 @@ const TEST_POLKADOT = {
   genesisHash: '0xe4e7807c233645b910c8db58e99ed53dc71fbfff5bbe8a5534fb7e83db449210'
 }
 
+const TEST_WRONG_GENESIS_HASH = {
+  ...TEST_KUSAMA,
+  genesisHash: '0xe4e7807c233645b91338db22e99ed53dc71fbfff5bbe8a5534fb7e83db449210'
+}
+
 interface Props {
   address: string
 }
@@ -33,6 +38,7 @@ interface Props {
 export function SignerPayloadComponent(props: Props) {
   const { address } = props;
 
+  const [call, setCall] = useState();
   const [oversizedPayload, setOversizedPayload] = useState();
   const [oversizedPayloadHash, setOversizedPayloadHash] = useState();
   const [kusamaPayload, setKusamaPayload] = useState();
@@ -40,7 +46,6 @@ export function SignerPayloadComponent(props: Props) {
   const [payloadHash, setPayloadHash] = useState();
 
   useEffect(() => {
-    GenericCall.injectMethods(extrinsics);
 
     const OVERSIZED = {
       ...TEST_KUSAMA,
@@ -48,16 +53,18 @@ export function SignerPayloadComponent(props: Props) {
     }
 
     const kusamaPayload = new GenericExtrinsicPayload(TEST_KUSAMA, { version: 3 });
-    const polkadotDevPayload = new GenericExtrinsicPayload(TEST_POLKADOT, { version: 3 });
+    const wrongGenesisHash = new GenericExtrinsicPayload(TEST_WRONG_GENESIS_HASH, { version: 3 });
     const oversizedPayload = new GenericExtrinsicPayload(OVERSIZED,  { version: 3 });
     const oversizedPayloadHash = blake2AsU8a(oversizedPayload.toU8a());
     const payloadHash = blake2AsU8a(kusamaPayload.toU8a());
+    const call = new Call('0x0500ffd7568e5f0a7eda67a82691ff379ac4bba4f9c9b859fe779b5d46363b61ad2db9e56c');
 
     setKusamaPayload(kusamaPayload);
     setPayloadHash(payloadHash);
-    setPolkadevPayload(polkadotDevPayload)
+    setPolkadevPayload(wrongGenesisHash)
     setOversizedPayload(oversizedPayload);
     setOversizedPayloadHash(oversizedPayloadHash);
+    setCall(call);
   }, []);
 
   return (
@@ -71,13 +78,14 @@ export function SignerPayloadComponent(props: Props) {
         kusamaPayload &&
           <QrDisplayPayload
             address={address}
-            cmd={0} // sign payload
+            cmd={2} // sign payload
             payload={kusamaPayload.toU8a()}
             style={{ width: '300px', height: '300px' }} />
       }
+      <p>Call: </p>{call && JSON.stringify(call.toJSON())}
 
       <Divider />
-      <h1>Polkadot Dev Mortal Payload</h1>
+      <h1>Wrong Genesis Hash Payload</h1>
       <b>Address: </b><p> {address} </p>
       <b>Payload JSON: </b><p style={{ overflow: 'auto' }}>{polkadevPayload && polkadevPayload.toJSON()}</p>
       <b>Payload SCALE U8A: </b><p style={{ overflow: 'auto' }}>{polkadevPayload && polkadevPayload.toU8a()}</p>
@@ -86,7 +94,7 @@ export function SignerPayloadComponent(props: Props) {
         polkadevPayload &&
           <QrDisplayPayload
             address={address}
-            cmd={0} // sign payload
+            cmd={2} // sign payload
             payload={polkadevPayload.toU8a()}
             style={{ width: '300px', height: '300px' }} />
       }

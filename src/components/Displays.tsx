@@ -5,6 +5,7 @@ import { Container, Divider, Input, Grid, Header, Button } from 'semantic-ui-rea
 import { SignerPayloadComponent } from './SignerPayload';
 import { SubstrateIntroduction } from './Introduction';
 import { SubstrateUOSMessage } from './Message';
+import { SubstrateMultipart } from './Multipart';
 
 const KUSAMA_ADDRESS = 'FF42iLDmp7JLeySMjwWWtYQqfycJvsJFBYrySoMvtGfvAGs';
 export function Displays () {
@@ -20,8 +21,8 @@ export function Displays () {
             <Grid.Row>
             Set Address: <Input onChange={handleSetAddress} value={address} />
             </Grid.Row>
-            <Grid width='12'>
-            <Grid.Row>
+            <Grid.Row><SubstrateMultipart /></Grid.Row>
+            {/* <Grid.Row>
                 <Grid.Column width='9'>
                 <SubstrateUOSMessage address={address} />
                 </Grid.Column>
@@ -32,7 +33,7 @@ export function Displays () {
                 <SignerPayloadComponent address={address} />
                 </Grid.Column>
             </Grid.Row>
-            </Grid>
+            </Grid> */}
         </React.Fragment>
     )
 }

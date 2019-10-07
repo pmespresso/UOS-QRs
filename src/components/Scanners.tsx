@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Container, Divider, Input, Grid, Header, Button } from 'semantic-ui-react';
 
-import ScanAddress from './react-qr/src/ScanAddress';
-import ScanSignature from './react-qr/src/ScanSignature';
+import ScanAddress from '@polkadot/react-qr/ScanAddress';
+import ScanSignature from '@polkadot/react-qr/ScanSignature';
 
 export function Scanners () {
     const [shouldScanAddress, setShouldScanAddress] = useState(true);

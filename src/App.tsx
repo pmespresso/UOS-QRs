@@ -1,11 +1,11 @@
 
 import React, { useState } from 'react';
-import { Container, Divider, Input, Grid, Header, Button } from 'semantic-ui-react';
+import { Container, Button } from 'semantic-ui-react';
 
 import './App.css';
 
-import { Displays } from './Displays';
-import { Scanners } from './Scanners';
+import { Displays } from './components/Displays';
+import { Scanners } from './components/Scanners';
 
 
 const App: React.FC = () => {

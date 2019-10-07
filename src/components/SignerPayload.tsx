@@ -7,7 +7,7 @@ import { Container, Divider, Input } from 'semantic-ui-react';
 
 import { QrDisplayPayload } from '@polkadot/react-qr';
 
-import { UPLOAD_CONTRACT } from './contract';
+import { UPLOAD_CONTRACT } from '../contract';
 
 const KUSAMA_ADDRESS = 'FF42iLDmp7JLeySMjwWWtYQqfycJvsJFBYrySoMvtGfvAGs';
 const TEST = {

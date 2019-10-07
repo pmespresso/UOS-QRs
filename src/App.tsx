@@ -1,12 +1,15 @@
 
+import extrinsics from '@polkadot/api-metadata/extrinsics/static';
 import React, { useState } from 'react';
 import { Container, Button } from 'semantic-ui-react';
+import { GenericCall } from '@polkadot/types';
 
 import './App.css';
 
 import { Displays } from './components/Displays';
 import { Scanners } from './components/Scanners';
 
+GenericCall.injectMethods(extrinsics);
 
 const App: React.FC = () => {
   const [shouldDisplay, setShouldDisplay] = useState(true);

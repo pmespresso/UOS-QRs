@@ -30,7 +30,7 @@ export function SubstrateUOSMessage (props: Props) {
       <Header>Address: </Header><p> {address} </p>
       <Header>Public Key - decodeAddress(address, false, 2):</Header><p>{decodeAddress(address, false, 2)}</p>
       <Header>Encode Back to Kusama ss58 - encodeAddress(decodeAddress(address), 2):</Header><p>{encodeAddress(decodeAddress(address), 2)}</p>
-      <Header>Encode Substrate ss58 - encodeAddress(decodeAddress(address), 42):</Header><p>{encodeAddress(decodeAddress(address), 42)}</p>
+      <Header>Encode Substrate ss58 - encodeAddress(decodeAddress(address), 42):</Header><p>{encodeAddress(decodeAddress(address, false, 42), 42)}</p>
       <Header>Message: </Header><input onChange={handleChangePayload} type='text' value={payload}></input>
       <QrDisplayPayload
         address={address}
